@@ -1,59 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
-import {useState} from "react";
+import React, { useState } from "react";
+
+import "./App.css";
 
 function App() {
+  // React States
+  const [errorMessages, setErrorMessages] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  //Mock DataBase
+  // User Login info
   const database = [
     {
-      username : "user1",
-      password: "password1"
+      username: "user1",
+      password: "pass1"
     },
     {
-      username : "user2",
-      password: "password2"
+      username: "user2",
+      password: "pass2"
     }
   ];
 
   const errors = {
-    uname: "errorUsername",
-    pass: "errorPassword"
-  }
-
-  const [errorMessage, setErrorMessage] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const renderErrorMessage = (name) =>
-      name === errorMessage.name && (
-          <div className="error">{errorMessage.message}</div>
-      );
+    uname: "invalid username",
+    pass: "invalid password"
+  };
 
   const handleSubmit = (event) => {
+    //Prevent page reload
     event.preventDefault();
-  }
 
-  let { uname, pass } = document.forms[0];
+    let { uname, pass } = document.forms[0];
 
-  const userData = database.find((user) =>
-  user.username === uname.value)
+    // Find user login info
+    const userData = database.find((user) => user.username === uname.value);
 
-  if(userData){
-    if(userData.password !== pass.value){
-      setErrorMessage({
-        name: "pass",
-        message: errors.pass
-      });
-    }else {
-      setIsSubmitted(true);
+    // Compare user info
+    if (userData) {
+      if (userData.password !== pass.value) {
+        // Invalid password
+        setErrorMessages({ name: "pass", message: errors.pass });
+      } else {
+        setIsSubmitted(true);
+      }
+    } else {
+      // Username not found
+      setErrorMessages({ name: "uname", message: errors.uname });
     }
-  }else {
-    setErrorMessage({
-      name: "username",
-      message: errors.uname
-    })
-  }
+  };
 
+  // Generate JSX code for error message
+  const renderErrorMessage = (name) =>
+      name === errorMessages.name && (
+          <div className="error">{errorMessages.message}</div>
+      );
+
+  // JSX code for login form
   const renderForm = (
       <div className="form">
         <form onSubmit={handleSubmit}>
@@ -72,15 +72,15 @@ function App() {
           </div>
         </form>
       </div>
-  )
+  );
 
   return (
-    <div className="App">
-      <div className="login-form">
-        <div className="title">Sign In</div>
-        {isSubmitted ? <div>User is successfully logged in</div> : renderForm}
+      <div className="app">
+        <div className="login-form">
+          <div className="title">Sign In</div>
+          {isSubmitted ? <div>User is successfully logged in</div> : renderForm}
+        </div>
       </div>
-    </div>
   );
 }
 
